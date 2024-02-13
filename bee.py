@@ -63,3 +63,61 @@ class Bee:
 
 bees = []
 noBee = 10
+
+for i in range(noBee):
+    obj = Bee()
+    bees.append(obj)
+
+def onBee(x, y, a, b, pos):
+    return x < pos[0] < x + a and y < pos[1] < y + b
+
+def pointer():
+    pos = pygame.mouse.get_pos()
+    r = 25
+    l = 20
+    color = (255, 255, 255)
+    pygame.draw.ellipse(display, color, (pos[0] - r / 2, pos[1] - r / 2, r, r), 4)
+    pygame.draw.line(display, color, (pos[0], pos[1] - l / 2), (pos[0], pos[1] - l), 4)
+    pygame.draw.line(display, color, (pos[0] + l / 2, pos[1]), (pos[0] + l, pos[1]), 4)
+    pygame.draw.line(display, color, (pos[0], pos[1] + l / 2), (pos[0], pos[1] + l), 4)
+    pygame.draw.line(display, color, (pos[0] - l / 2, pos[1]), (pos[0] - l, pos[1]), 4)
+
+def lowerPlatform():
+    pygame.draw.rect(display, darkGray, (0, height - 100, width, 100))
+
+def showScore():
+    scoreText = font.render("Bees Caught: " + str(score), True, white)
+    display.blit(scoreText, (150, height - 70))
+
+def close():
+    pygame.quit()
+    sys.exit()
+
+def game():
+    global score
+    pygame.mixer.music.play(-1)
+    loop = True
+    while loop:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                close()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q:
+                    close()
+                if event.key == pygame.K_r:
+                    score = 0
+                    game()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                for i in range(noBee):
+                    bees[i].burst()
+
+        display.blit(background_image, (0, 0))
+        for i in range(noBee):
+            bees[i].show()
+        pointer()
+        lowerPlatform()
+        showScore()
+        pygame.display.update()
+        clock.tick(60)
+
+game()
